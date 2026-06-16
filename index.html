@@ -137,7 +137,7 @@
 
 <script>
 /* ====== CẤU HÌNH ====== */
-const SCRIPT_URL = "PASTE_GOOGLE_APPS_SCRIPT_URL_HERE";
+const ACCESS_KEY = "8fe4f31a-4fbd-424e-8958-bc45ce10719a";  // Web3Forms — gửi lead về email
 const BOOK_URL   = "https://calendly.com/your-link";
 /* ====================== */
 
@@ -339,13 +339,23 @@ async function submitLead(){
   if(!name||!phone||!email){ alert(t.alertFill); return; }
   $('submitBtn').disabled=true; $('submitBtn').textContent=t.submitting;
   const total=scores.retire+scores.family+scores.health+scores.estate;
-  const payload={ name,phone,email, lang, score:total,
-    interests:Object.keys(scores).filter(k=>scores[k]<18).join(", "),
-    answers:JSON.stringify(answers), ts:new Date().toISOString() };
+  const gaps=Object.keys(scores).filter(k=>scores[k]<18).join(", ");
   try{
-    if(SCRIPT_URL && !SCRIPT_URL.includes("PASTE_")){
-      await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",
-        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)});
+    if(ACCESS_KEY && !ACCESS_KEY.includes("PASTE_")){
+      await fetch("https://api.web3forms.com/submit",{
+        method:"POST",
+        headers:{"Content-Type":"application/json", Accept:"application/json"},
+        body:JSON.stringify({
+          access_key: ACCESS_KEY,
+          subject: "🔔 LEAD MỚI từ Quiz: "+name+" — Điểm "+total+"/100",
+          from_name: "Financial Protection Quiz",
+          name, phone, email,
+          score: total+" / 100",
+          language: lang,
+          interested_in: gaps || "(toàn diện)",
+          answers: JSON.stringify(answers)
+        })
+      });
     }
   }catch(e){ console.warn(e); }
   showResult(name);
