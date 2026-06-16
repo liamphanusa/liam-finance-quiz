@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financial Protection Score | Liam Phan</title>
+<meta name="description" content="Free assessment of your family's financial protection: retirement, family protection, health and estate. English / Tiếng Việt / 中文 / Español.">
+<style>
+  :root{ --bg:#F4F7FB; --card:#FFFFFF; --ink:#1F2A37; --soft:#6B7785;
+    --line:#E6EBF1; --teal:#13B5A6; --blue:#3B82F6; --gold:#E9A53B;
+    --green:#22A565; --amber:#E8A33D; --red:#E0564B; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+    background:linear-gradient(rgba(20,30,45,.55),rgba(20,30,45,.68)), url('bg.jpg') center/cover fixed no-repeat;
+    color:var(--ink); min-height:100vh; line-height:1.6;}
+  .wrap{max-width:520px; margin:0 auto; padding:16px 16px 60px;}
+  .langbar{display:flex; gap:6px; justify-content:center; margin-bottom:6px; flex-wrap:wrap;}
+  .langbar button{background:rgba(255,255,255,.85); border:1px solid rgba(255,255,255,.4);
+    color:var(--ink); font-size:13px; font-weight:600; padding:6px 12px; border-radius:20px; cursor:pointer; transition:.15s;}
+  .langbar button.active{background:var(--gold); color:#fff; border-color:var(--gold);}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:20px;
+    padding:26px 22px; margin-top:14px; box-shadow:0 8px 30px rgba(0,0,0,.18);}
+  h1{font-size:24px; line-height:1.32; margin-bottom:10px; color:var(--ink);}
+  h1 .hl{font-weight:800; font-size:1.1em; letter-spacing:.2px;
+    background:linear-gradient(90deg,#0E5C2E,#16A34A);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    border-bottom:3px solid var(--gold); padding-bottom:1px;}
+  .pills{display:flex; flex-wrap:wrap; gap:7px; margin:2px 0 12px;}
+  .pills span{font-size:12.5px; font-weight:600; color:var(--ink);
+    background:#EFF7F6; border:1px solid #DCEFEC; padding:5px 11px; border-radius:20px;}
+  .sub{color:var(--soft); font-size:15px;}
+  .progress{height:8px; background:var(--line); border-radius:10px; margin:16px 0 22px; overflow:hidden;}
+  .progress span{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--teal),var(--blue)); transition:width .35s;}
+  .q{font-size:19px; font-weight:700; margin-bottom:18px; color:var(--ink);}
+  .opt{display:block; width:100%; text-align:left; padding:15px 16px; margin-bottom:10px;
+    background:#F8FAFC; border:1.5px solid var(--line); border-radius:14px;
+    color:var(--ink); font-size:15.5px; cursor:pointer; transition:.15s;}
+  .opt:hover{border-color:var(--teal); background:#EFFBF9;}
+  .btn{display:block; width:100%; padding:16px; border:none; border-radius:14px;
+    background:var(--teal); color:#fff; font-size:17px; font-weight:700; cursor:pointer; margin-top:8px; transition:.18s;}
+  .btn:hover{background:#0fa093; transform:translateY(-1px); box-shadow:0 8px 20px rgba(19,181,166,.3);}
+  .btn:disabled{opacity:.5; cursor:not-allowed;}
+  .btn.gold{background:var(--gold);} .btn.gold:hover{background:#d9962f;}
+  input{width:100%; padding:14px 15px; margin-bottom:12px; border-radius:12px;
+    border:1.5px solid var(--line); background:#fff; color:var(--ink); font-size:15.5px;}
+  input::placeholder{color:#A6B0BC;} input:focus{outline:none; border-color:var(--teal);}
+  .small{font-size:12px; color:var(--soft); margin-top:14px; text-align:center; line-height:1.5;}
+  .center{text-align:center;} .hidden{display:none;}
+  .howit{margin:18px 0 6px;}
+  .howit > div{display:flex; gap:12px; align-items:center; margin-bottom:11px; font-size:14.5px; color:#3E4A57;}
+  .howit .n{width:26px;height:26px;border-radius:50%;background:#EAFBF8;color:var(--teal);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+  .score-ring{width:170px;height:170px;border-radius:50%;margin:8px auto 12px;display:flex;align-items:center;justify-content:center;}
+  .score-inner{background:#fff;border-radius:50%;width:138px;height:138px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .score-num{font-size:48px;font-weight:800;line-height:1;color:var(--ink);}
+  .score-of{font-size:13px;color:var(--soft);}
+  .score-label{text-align:center;font-size:17px;font-weight:700;margin-bottom:4px;}
+  .pillar{margin-bottom:17px;}
+  .pillar-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;}
+  .pillar-name{font-size:15px;font-weight:700;color:var(--ink);}
+  .pillar-score{font-size:13px;color:var(--soft);}
+  .pbar{height:10px;background:var(--line);border-radius:8px;overflow:hidden;}
+  .pbar span{display:block;height:100%;border-radius:8px;transition:width .6s;}
+  .pillar-note{font-size:13.5px;margin-top:8px;display:flex;gap:8px;align-items:flex-start;color:#3E4A57;}
+  .pillar-note .ic{flex-shrink:0;}
+  .summary{background:#F8FAFC;border:1px solid var(--line);border-radius:14px;padding:16px;margin:18px 0;font-size:14.5px;line-height:1.65;color:#3E4A57;}
+  .summary b{color:var(--ink);}
+  a.book{display:block;text-align:center;padding:16px;border-radius:14px;background:var(--gold);color:#fff;font-weight:700;text-decoration:none;margin-top:8px;font-size:16px;}
+  a.book:hover{background:#d9962f;}
+  .disc{font-size:11.5px;color:var(--soft);margin-top:16px;text-align:center;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="langbar">
+    <button data-lang="en">EN</button>
+    <button data-lang="vi">Tiếng Việt</button>
+    <button data-lang="zh">中文</button>
+    <button data-lang="es">Español</button>
+  </div>
+
+  <!-- INTRO -->
+  <div class="card" id="intro">
+    <h1 id="introTitle"></h1>
+    <div class="pills" id="introPills"></div>
+    <p class="sub" id="introSub"></p>
+    <div class="howit">
+      <div><div class="n">1</div> <span id="step1"></span></div>
+      <div><div class="n">2</div> <span id="step2"></span></div>
+      <div><div class="n">3</div> <span id="step3"></span></div>
+    </div>
+    <button class="btn" id="startBtn" onclick="start()"></button>
+    <p class="small" id="introSmall"></p>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="card hidden" id="quiz">
+    <div class="progress"><span id="bar"></span></div>
+    <div class="q" id="qtext"></div>
+    <div id="opts"></div>
+  </div>
+
+  <!-- FORM -->
+  <div class="card hidden" id="form">
+    <h1 style="font-size:21px;text-align:center;" id="formTitle"></h1>
+    <p class="sub center" style="margin-bottom:16px;" id="formSub"></p>
+    <input id="name" /><input id="phone" inputmode="tel" /><input id="email" inputmode="email" />
+    <button class="btn gold" id="submitBtn" onclick="submitLead()"></button>
+    <p class="small" id="formSmall"></p>
+  </div>
+
+  <!-- RESULT -->
+  <div class="card hidden" id="result">
+    <p class="sub center"><span id="resPrefix"></span> <span id="rName" style="color:var(--teal);font-weight:700;"></span></p>
+    <div class="score-ring" id="ring"><div class="score-inner"><div class="score-num" id="scoreNum">0</div><div class="score-of">/ 100</div></div></div>
+    <div class="score-label" id="scoreLabel"></div>
+    <div id="pillars" style="margin-top:18px;"></div>
+    <div class="summary" id="summary"></div>
+    <a class="book" id="bookLink" href="#"></a>
+    <p class="disc" id="disc"></p>
+  </div>
+</div>
+
+<script>
+/* ====== CẤU HÌNH ====== */
+const SCRIPT_URL = "PASTE_GOOGLE_APPS_SCRIPT_URL_HERE";
+const BOOK_URL   = "https://calendly.com/your-link";
+/* ====================== */
+
+/* Điểm + trụ cột (chung mọi ngôn ngữ) */
+const QBASE = [
+  {pillar:"context", key:"age",    pts:[0,0,0,0]},
+  {pillar:"retire",  key:"retire", pts:[25,18,8,0]},
+  {pillar:"family",  key:"family", pts:[25,15,6,0]},
+  {pillar:"health",  key:"health", pts:[25,13,4,2]},
+  {pillar:"estate",  key:"estate", pts:[25,14,4,0]},
+];
+
+const T = {
+  en:{
+    introTitle:`What's your family's <span class="hl">Financial Protection</span> Score?`,
+    introSub:"A quick, objective assessment — like a check-up for your financial plan.",
+    steps:["Answer 5 questions (about 60 seconds)","Get a <b>score 0–100</b> + 4-pillar analysis","See exactly where you're <b>strong and where you have gaps</b>"],
+    startBtn:"Start assessment →", introSmall:"Free · Objective · No selling in the quiz",
+    formTitle:"See your score",
+    formSub:`Enter your info to see your <b>score + detailed analysis</b>. We'll also email you the full report.`,
+    ph:["Full name *","Phone number *","Email *"], submit:"Show my score →",
+    formSmall:"Your info is secure. We never sell your data.",
+    submitting:"Calculating...", alertFill:"Please fill in your name, phone and email!",
+    resPrefix:"Financial Protection Score for",
+    bands:["Solid 💪","Pretty good — a few gaps to fill","Notable gaps","Significant gaps"],
+    sumOk:`<b>Excellent!</b> Your plan is fairly comprehensive. A short chat can help optimize taxes & efficiency.`,
+    sumGap:`You <b>need to strengthen</b>: {list}. I can help you fill each gap — in your language, for your situation.`,
+    book:"📅 Book a free consultation — fill the gaps",
+    disc:"This score is for reference & education only, based on your answers — not personal financial/legal/medical advice. Please consult a licensed professional for your situation.",
+    pillars:{retire:"💰 Retirement",family:"🛡️ Family Protection",health:"🏥 Health",estate:"📜 Estate"},
+    q:[
+      {q:"What's your age range?", opts:["Under 35","35–50","50–65","Over 65"]},
+      {q:"What's your current retirement plan?", opts:["IUL/Annuity + 401k/IRA","401k/IRA only","Just regular savings","Nothing yet"],
+        have:"You have a retirement foundation.", miss:"Retirement isn't optimized — you may be missing tax advantages & compounding."},
+      {q:"If something happened to you, would your family have income replacement?", opts:["Yes, enough for years","Yes but quite little","Not sure / haven't planned","Nothing yet"],
+        have:"Your family has income protection.", miss:"Your family lacks protection if something happens — a gap many overlook."},
+      {q:"Health insurance & senior medical costs (Medicare/Medigap)?", opts:["Well prepared","Know a little","Haven't thought about it","Need advice"],
+        have:"You understand senior health coverage.", miss:"Senior medical costs can be huge — being unprepared is a real risk."},
+      {q:"Do you have a Living Trust / Will?", opts:["Have a Living Trust","Only a Will","Nothing yet","Don't know what it is"],
+        have:"You have estate documents in place.", miss:"No Living Trust — your family may face costly, lengthy probate."},
+    ],
+  },
+  vi:{
+    introTitle:`Điểm <span class="hl">Bảo Vệ Tài Chính</span> của gia đình bạn là bao nhiêu?`,
+    introSub:"Một bài đánh giá nhỏ, khách quan — giống như buổi 'khám tổng quát' cho kế hoạch tài chính của bạn.",
+    steps:["Trả lời 5 câu (khoảng 60 giây)","Nhận <b>điểm số 0–100</b> + phân tích 4 trụ cột","Biết rõ bạn đang <b>vững ở đâu, thiếu chỗ nào</b>"],
+    startBtn:"Bắt đầu đánh giá →", introSmall:"Miễn phí · Khách quan · Không bán hàng trong quiz",
+    formTitle:"Xem điểm của bạn",
+    formSub:`Nhập thông tin để xem <b>điểm số + phân tích chi tiết</b>. Mình cũng gửi bản đầy đủ qua email.`,
+    ph:["Họ tên *","Số điện thoại *","Email *"], submit:"Xem điểm của tôi →",
+    formSmall:"Thông tin được bảo mật. Mình không bán dữ liệu của bạn.",
+    submitting:"Đang tính điểm...", alertFill:"Vui lòng điền đủ tên, số điện thoại và email nhé!",
+    resPrefix:"Điểm Bảo Vệ Tài Chính của",
+    bands:["Vững vàng 💪","Khá tốt — vài chỗ cần bổ sung","Có lỗ hổng đáng kể","Nhiều lỗ hổng quan trọng"],
+    sumOk:`<b>Tuyệt vời!</b> Kế hoạch của bạn khá toàn diện. Một buổi nói chuyện ngắn có thể giúp tối ưu thêm về thuế & hiệu quả.`,
+    sumGap:`Bạn đang <b>cần bổ sung</b> ở: {list}. Mình có thể giúp bạn lấp từng chỗ một — bằng tiếng Việt, theo đúng hoàn cảnh của bạn.`,
+    book:"📅 Đặt lịch tư vấn miễn phí — bổ sung chỗ thiếu",
+    disc:"Điểm số chỉ mang tính tham khảo & giáo dục, dựa trên câu trả lời của bạn — không phải lời khuyên tài chính/pháp lý/y tế cá nhân. Hãy tham khảo chuyên viên được cấp phép phù hợp với hoàn cảnh của bạn.",
+    pillars:{retire:"💰 Hưu trí",family:"🛡️ Bảo vệ gia đình",health:"🏥 Sức khỏe",estate:"📜 Di sản"},
+    q:[
+      {q:"Bạn đang ở độ tuổi nào?", opts:["Dưới 35","35–50","50–65","Trên 65"]},
+      {q:"Kế hoạch hưu trí của bạn hiện tại?", opts:["Có IUL/Annuity + 401k/IRA","Có 401k/IRA","Chỉ tiết kiệm thường","Chưa có gì cả"],
+        have:"Bạn đã có nền tảng hưu trí.", miss:"Hưu trí chưa tối ưu — có thể đang bỏ lỡ lợi thế thuế & lãi kép."},
+      {q:"Nếu bạn có chuyện không may, gia đình có khoản tài chính thay thế thu nhập không?", opts:["Có, đủ lo cho gia đình nhiều năm","Có nhưng khá ít","Không chắc / chưa tính","Chưa có gì cả"],
+        have:"Gia đình bạn đã có lớp bảo vệ thu nhập.", miss:"Gia đình thiếu lớp bảo vệ nếu bạn có chuyện — lỗ hổng nhiều người bỏ qua."},
+      {q:"Bảo hiểm sức khỏe & chi phí y tế tuổi già (Medicare/Medigap)?", opts:["Đã chuẩn bị kỹ","Mới biết sơ sơ","Chưa nghĩ tới","Đang cần tư vấn"],
+        have:"Bạn đã nắm về bảo hiểm sức khỏe hưu trí.", miss:"Chi phí y tế tuổi già có thể rất lớn — chưa chuẩn bị là rủi ro thật."},
+      {q:"Living Trust / Di chúc (Will) — bạn đã có chưa?", opts:["Đã có Living Trust","Chỉ có Will","Chưa có gì","Không biết là gì"],
+        have:"Bạn đã có giấy tờ di sản.", miss:"Thiếu Living Trust — gia đình có thể vướng probate tốn kém & mất thời gian."},
+    ],
+  },
+  zh:{
+    introTitle:`您家庭的<span class="hl">财务保障</span>评分是多少？`,
+    introSub:"一个快速、客观的评估——就像为您的财务计划做一次体检。",
+    steps:["回答5个问题（约60秒）","获得<b>0–100分</b>+四大支柱分析","清楚了解您的<b>优势和不足</b>"],
+    startBtn:"开始评估 →", introSmall:"免费 · 客观 · 测验中不推销",
+    formTitle:"查看您的评分",
+    formSub:`输入信息以查看您的<b>评分+详细分析</b>。我们也会通过邮件发送完整报告。`,
+    ph:["姓名 *","电话号码 *","电子邮箱 *"], submit:"显示我的评分 →",
+    formSmall:"您的信息是安全的。我们绝不出售您的数据。",
+    submitting:"计算中...", alertFill:"请填写姓名、电话和邮箱！",
+    resPrefix:"财务保障评分 —",
+    bands:["稳健 💪","不错——有几处需补充","明显的不足","重大不足"],
+    sumOk:`<b>很棒！</b>您的计划相当全面。简短交流可帮助优化税务和效率。`,
+    sumGap:`您<b>需要加强</b>：{list}。我可以帮您逐一弥补——用您的语言，针对您的情况。`,
+    book:"📅 预约免费咨询——弥补不足",
+    disc:"此评分仅供参考和教育之用，基于您的回答——并非个人财务/法律/医疗建议。请咨询持牌专业人士。",
+    pillars:{retire:"💰 退休",family:"🛡️ 家庭保障",health:"🏥 健康",estate:"📜 遗产"},
+    q:[
+      {q:"您的年龄段是？", opts:["35岁以下","35–50","50–65","65岁以上"]},
+      {q:"您目前的退休计划是？", opts:["IUL/年金 + 401k/IRA","仅有401k/IRA","只是普通储蓄","还没有"],
+        have:"您已有退休基础。", miss:"退休规划未优化——可能错失税务优势和复利。"},
+      {q:"如果您发生意外，家人是否有收入替代保障？", opts:["有，足够支撑多年","有但较少","不确定/未规划","还没有"],
+        have:"您的家庭有收入保障。", miss:"若发生意外，家庭缺乏保障——许多人忽视的漏洞。"},
+      {q:"健康保险及老年医疗费用（Medicare/Medigap）？", opts:["已充分准备","略知一二","还没考虑","需要咨询"],
+        have:"您了解老年健康保障。", miss:"老年医疗费用可能巨大——未准备是真实风险。"},
+      {q:"您有生前信托/遗嘱吗？", opts:["已有生前信托","仅有遗嘱","还没有","不知道是什么"],
+        have:"您已有遗产文件。", miss:"没有生前信托——家人可能面临昂贵漫长的遗产认证。"},
+    ],
+  },
+  es:{
+    introTitle:`¿Cuál es el <span class="hl">Puntaje de Protección Financiera</span> de su familia?`,
+    introSub:"Una evaluación rápida y objetiva, como un chequeo para su plan financiero.",
+    steps:["Responda 5 preguntas (unos 60 segundos)","Obtenga un <b>puntaje 0–100</b> + análisis de 4 pilares","Vea dónde está <b>fuerte y dónde tiene brechas</b>"],
+    startBtn:"Comenzar evaluación →", introSmall:"Gratis · Objetivo · Sin ventas en el cuestionario",
+    formTitle:"Vea su puntaje",
+    formSub:`Ingrese sus datos para ver su <b>puntaje + análisis detallado</b>. También le enviaremos el informe completo por correo.`,
+    ph:["Nombre completo *","Número de teléfono *","Correo electrónico *"], submit:"Mostrar mi puntaje →",
+    formSmall:"Su información está segura. Nunca vendemos sus datos.",
+    submitting:"Calculando...", alertFill:"¡Por favor complete su nombre, teléfono y correo!",
+    resPrefix:"Puntaje de Protección Financiera de",
+    bands:["Sólido 💪","Bastante bien — algunas brechas","Brechas notables","Brechas significativas"],
+    sumOk:`<b>¡Excelente!</b> Su plan es bastante completo. Una breve charla puede optimizar impuestos y eficiencia.`,
+    sumGap:`<b>Necesita reforzar</b>: {list}. Puedo ayudarle a cubrir cada brecha, en su idioma y para su situación.`,
+    book:"📅 Reserve una consulta gratis — cubra las brechas",
+    disc:"Este puntaje es solo de referencia y educativo, según sus respuestas — no es asesoría financiera/legal/médica personal. Consulte a un profesional con licencia para su situación.",
+    pillars:{retire:"💰 Jubilación",family:"🛡️ Protección Familiar",health:"🏥 Salud",estate:"📜 Patrimonio"},
+    q:[
+      {q:"¿Cuál es su rango de edad?", opts:["Menos de 35","35–50","50–65","Más de 65"]},
+      {q:"¿Cuál es su plan de jubilación actual?", opts:["IUL/Anualidad + 401k/IRA","Solo 401k/IRA","Solo ahorros normales","Nada aún"],
+        have:"Tiene una base de jubilación.", miss:"La jubilación no está optimizada: podría perder ventajas fiscales e interés compuesto."},
+      {q:"Si algo le pasara, ¿su familia tendría reemplazo de ingresos?", opts:["Sí, suficiente por años","Sí pero muy poco","No estoy seguro / no lo he planeado","Nada aún"],
+        have:"Su familia tiene protección de ingresos.", miss:"Su familia carece de protección si algo sucede: una brecha que muchos pasan por alto."},
+      {q:"¿Seguro de salud y costos médicos en la vejez (Medicare/Medigap)?", opts:["Bien preparado","Sé un poco","No lo he pensado","Necesito asesoría"],
+        have:"Entiende la cobertura de salud para la vejez.", miss:"Los costos médicos en la vejez pueden ser enormes: no estar preparado es un riesgo real."},
+      {q:"¿Tiene un Fideicomiso en Vida / Testamento?", opts:["Tengo un Fideicomiso en Vida","Solo un Testamento","Nada aún","No sé qué es"],
+        have:"Tiene documentos patrimoniales.", miss:"Sin Fideicomiso en Vida: su familia podría enfrentar un proceso sucesorio costoso y largo."},
+    ],
+  },
+};
+
+let lang = (navigator.language||"en").slice(0,2);
+if(!T[lang]) lang = "en";
+let step=0; const answers={}; const scores={retire:0,family:0,health:0,estate:0};
+const $=id=>document.getElementById(id);
+
+function applyLang(){
+  const t=T[lang];
+  document.documentElement.lang=lang;
+  $('introTitle').innerHTML=t.introTitle;
+  $('introPills').innerHTML=Object.values(t.pillars).map(p=>`<span>${p}</span>`).join("");
+  $('introSub').textContent=t.introSub;
+  $('step1').innerHTML=t.steps[0]; $('step2').innerHTML=t.steps[1]; $('step3').innerHTML=t.steps[2];
+  $('startBtn').textContent=t.startBtn; $('introSmall').textContent=t.introSmall;
+  $('formTitle').textContent=t.formTitle; $('formSub').innerHTML=t.formSub;
+  $('name').placeholder=t.ph[0]; $('phone').placeholder=t.ph[1]; $('email').placeholder=t.ph[2];
+  $('submitBtn').textContent=t.submit; $('formSmall').textContent=t.formSmall;
+  $('resPrefix').textContent=t.resPrefix; $('disc').textContent=t.disc;
+  document.querySelectorAll('.langbar button').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
+  if(!$('quiz').classList.contains('hidden')) render();
+}
+document.querySelectorAll('.langbar button').forEach(b=>{
+  b.onclick=()=>{ lang=b.dataset.lang; applyLang(); };
+});
+
+function start(){ $('intro').classList.add('hidden'); $('quiz').classList.remove('hidden'); render(); }
+function render(){
+  const base=QBASE[step], t=T[lang].q[step];
+  $('bar').style.width=(step/QBASE.length*100)+"%";
+  $('qtext').textContent=`${step+1}. ${t.q}`;
+  const box=$('opts'); box.innerHTML="";
+  t.opts.forEach((label,j)=>{
+    const b=document.createElement('button'); b.className="opt"; b.textContent=label;
+    b.onclick=()=>{ answers[base.key]=label; if(base.pillar!=="context") scores[base.pillar]=base.pts[j]; next(); };
+    box.appendChild(b);
+  });
+}
+function next(){ step++; if(step<QBASE.length) render(); else showForm(); }
+function showForm(){ $('bar').style.width="100%"; $('quiz').classList.add('hidden'); $('form').classList.remove('hidden'); }
+function colorFor(s){ return s>=20?"var(--green)":s>=12?"var(--amber)":"var(--red)"; }
+
+function showResult(name){
+  const t=T[lang], total=scores.retire+scores.family+scores.health+scores.estate;
+  $('rName').textContent=name.split(" ").pop();
+  const band = total>=80?[ "var(--green)",t.bands[0]] : total>=60?["#2563EB",t.bands[1]]
+             : total>=40?["var(--amber)",t.bands[2]] : ["var(--red)",t.bands[3]];
+  $('scoreLabel').textContent=band[1]; $('scoreLabel').style.color=band[0];
+  let cur=0; const ring=$('ring');
+  const tick=setInterval(()=>{ cur+=2; if(cur>=total){cur=total; clearInterval(tick);}
+    $('scoreNum').textContent=cur;
+    ring.style.background=`conic-gradient(${band[0]} ${cur*3.6}deg, var(--line) 0deg)`; },18);
+
+  const pbox=$('pillars'); pbox.innerHTML=""; const missing=[];
+  ["retire","family","health","estate"].forEach(k=>{
+    const s=scores[k], name2=t.pillars[k], idx=QBASE.findIndex(x=>x.pillar===k), qt=t.q[idx], good=s>=18;
+    if(!good) missing.push(name2);
+    pbox.insertAdjacentHTML('beforeend',
+      `<div class="pillar"><div class="pillar-top"><span class="pillar-name">${name2}</span><span class="pillar-score">${s}/25</span></div>
+        <div class="pbar"><span style="width:${s/25*100}%;background:${colorFor(s)}"></span></div>
+        <div class="pillar-note"><span class="ic">${good?'✅':'⚠️'}</span><span>${good?qt.have:qt.miss}</span></div></div>`);
+  });
+  $('summary').innerHTML = missing.length===0 ? t.sumOk : t.sumGap.replace("{list}", missing.join(", "));
+  $('bookLink').textContent=t.book; $('bookLink').href=BOOK_URL;
+  $('form').classList.add('hidden'); $('result').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+async function submitLead(){
+  const t=T[lang], name=$('name').value.trim(), phone=$('phone').value.trim(), email=$('email').value.trim();
+  if(!name||!phone||!email){ alert(t.alertFill); return; }
+  $('submitBtn').disabled=true; $('submitBtn').textContent=t.submitting;
+  const total=scores.retire+scores.family+scores.health+scores.estate;
+  const payload={ name,phone,email, lang, score:total,
+    interests:Object.keys(scores).filter(k=>scores[k]<18).join(", "),
+    answers:JSON.stringify(answers), ts:new Date().toISOString() };
+  try{
+    if(SCRIPT_URL && !SCRIPT_URL.includes("PASTE_")){
+      await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",
+        headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)});
+    }
+  }catch(e){ console.warn(e); }
+  showResult(name);
+}
+applyLang();
+</script>
+</body>
+</html>
